@@ -94,16 +94,16 @@ project
 │  │  │          │  Demo.java
 │  │  │          │
 │  │  │          ├─dao
-│  │  │          │  │  BookDao.java
+│  │  │          │  │  TestDao.java
 │  │  │          │  │
 │  │  │          │  └─impl
-│  │  │          │          BookDaoImpl.java
+│  │  │          │          TestDaoImpl.java
 │  │  │          │
 │  │  │          └─service
-│  │  │              │  BookService.java
+│  │  │              │  TestService.java
 │  │  │              │
 │  │  │              └─impl
-│  │  │                      BookServiceImpl.java
+│  │  │                      TestServiceImpl.java
 │  │  │
 │  │  └─resources
 │  │          applicationContext.xml
@@ -152,79 +152,75 @@ project
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="bookDao" class="com.test.dao.impl.BookDaoImpl"></bean>
-    <bean id="bookService" class="com.test.service.impl.BookServiceImpl">
-        <property name="bookDao" ref="bookDao"></property>
+    <bean id="testDao" class="com.test.dao.impl.TestDaoImpl"></bean>
+    <bean id="testService" class="com.test.service.impl.TestServiceImpl">
+        <property name="testDao" ref="testDao"></property>
     </bean>
-
 </beans>
 ```
 
 
 
-### BookDao.java
+### TestDao.java
 
 ```java
 package com.test.dao;
 
-public interface BookDao {
-    public void print(int id);
+public interface TestDao {
+    void print();
 }
 ```
 
 
 
-### BookDaoImpl.java
+### TestDaoImpl.java
 
 ```java
 package com.test.dao.impl;
 
-import com.test.dao.BookDao;
+import com.test.dao.TestDao;
 
-public class BookDaoImpl implements BookDao {
-    public void print(int id) {
-        System.out.println("Book Dao Impl " + id);
+public class TestDaoImpl implements TestDao {
+    public void print() {
+        System.out.println("TestDaoImpl: print");
     }
 }
 ```
 
 
 
-### BookService.java
+### TestService.java
 
 ```java
 package com.test.service;
 
-public interface BookService {
-    public void print(int id);
+public interface TestService {
+    void print();
 }
 ```
 
 
 
-### BookServiceImpl.java
+### TestServiceImpl.java
 
 ```java
 package com.test.service.impl;
 
-import com.test.dao.BookDao;
-import com.test.dao.impl.BookDaoImpl;
-import com.test.service.BookService;
+import com.test.dao.TestDao;
+import com.test.service.TestService;
 
-public class BookServiceImpl implements BookService {
-    private BookDao bookDao;
+public class TestServiceImpl implements TestService {
+    private TestDao testDao;
 
-    public void print(int id) {
-        bookDao.print(id);
-        System.out.println("Book Service Impl " + id);
+    public void print() {
+        testDao.print();
+        System.out.println("TestServiceImpl: print");
     }
 
-    public void setBookDao(BookDao bookDao) {
-        this.bookDao = bookDao;
+    public void setTestDao(TestDao testDao) {
+        this.testDao = testDao;
     }
 }
 ```
@@ -236,18 +232,18 @@ public class BookServiceImpl implements BookService {
 ```java
 package com.test;
 
-import com.test.dao.BookDao;
-import com.test.service.BookService;
+import com.test.dao.TestDao;
+import com.test.service.TestService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Demo {
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
-        BookDao bookDao = (BookDao) context.getBean("bookDao");
-        BookService bookService = (BookService) context.getBean("bookService");
-        bookDao.print(1);
-        bookService.print(2);
+        TestDao testDao = (TestDao) context.getBean("testDao");
+        TestService testService = (TestService) context.getBean("testService");
+        testDao.print();
+        testService.print();
     }
 }
 ```
@@ -257,9 +253,9 @@ public class Demo {
 ### 运行结果
 
 ```
-Book Dao Impl 1
-Book Dao Impl 2
-Book Service Impl 2
+TestDaoImpl: print
+TestDaoImpl: print
+TestServiceImpl: print
 ```
 
 
@@ -268,7 +264,7 @@ Book Service Impl 2
 
 属性：
 	id
-	name
+	name：定义bean的别名（可用逗号、分号、空格分隔）
 	class
 	scope：
 		singleton（单例，默认）：表现层对象、业务层对象、数据层对象、工具对象（适合交给容器管理）
@@ -283,3 +279,9 @@ bean的实例化：
 	静态工厂
 	实例工厂
 	→ FactoryBean
+
+
+
+## 示例项目
+
+### 
