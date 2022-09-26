@@ -1,4 +1,4 @@
-# 【Spring】笔记
+# 【Spring】概念、bean标签
 
 
 
@@ -985,5 +985,154 @@ List: [abc, def, ghi]
 Set: [abc, def, ghi]
 Map: {abc=1, def=2, ghi=3}
 Properties: {abc=1, def=2, ghi=3}
+```
+
+
+
+### 获取bean
+
+#### 方式一
+
+```java
+TestDao testDao = (TestDao) context.getBean("testDao");
+```
+
+
+
+#### 方式二
+
+```java
+TestDao testDao = context.getBean("testDao", TestDao.class);
+```
+
+
+
+#### 方式三
+
+```java
+TestDao testDao = context.getBean(TestDao.class);
+```
+
+
+
+## properties文件
+
+相关视频：
+[黑马程序员2022新版SSM框架教程_Spring+SpringMVC+Maven高级+SpringBoot+MyBatisPlus企业实用开发技术 P18 Spring-16-加载properties文件](https://www.bilibili.com/video/BV1Fi4y1S7ix?p=18)
+
+
+
+### 示例
+
+#### 项目文件
+
+```
+project
+│  pom.xml
+│
+├─.idea
+├─src
+│  ├─main
+│  │  ├─java
+│  │  │  └─com
+│  │  │      └─test
+│  │  │          │  Demo.java
+│  │  │          │
+│  │  │          └─dao
+│  │  │              │  TestDao.java
+│  │  │              │
+│  │  │              └─impl
+│  │  │                      TestDaoImpl.java
+│  │  │
+│  │  └─resources
+│  │          application.properties
+│  │          applicationContext.xml
+│  │
+│  └─test
+└─target
+```
+
+
+
+#### applicationContext.xml
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:property-placeholder location="application.properties"></context:property-placeholder>
+
+    <bean id="testDao" class="com.test.dao.impl.TestDaoImpl">
+        <property name="s" value="${s}"></property>
+    </bean>
+</beans>
+```
+
+
+
+#### application.properties
+
+```properties
+s=abc
+```
+
+
+
+#### TestDaoImpl.java
+
+```java
+package com.test.dao.impl;
+
+import com.test.dao.TestDao;
+
+public class TestDaoImpl implements TestDao {
+    private String s;
+
+    public void setS(String s) {
+        this.s = s;
+    }
+
+    public String getS() {
+        return s;
+    }
+
+    public void print() {
+        System.out.println("TestDaoImpl: print");
+        System.out.println("s: " + s);
+    }
+}
+```
+
+
+
+#### Demo.java
+
+```java
+package com.test;
+
+import com.test.dao.TestDao;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+public class Demo {
+    public static void main(String[] args) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        TestDao testDao = (TestDao) context.getBean("testDao");
+        testDao.print();
+    }
+}
+```
+
+
+
+运行结果：
+
+```
+TestDaoImpl: print
+s: abc
 ```
 
